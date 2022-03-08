@@ -41,7 +41,7 @@ function converter(csvText, local) {
 // 지역별 기온
 export async function getWeathers(local) {
   const data = fs.promises
-    .readFile("./temperature.csv")
+    .readFile("./csv_data/temperature.csv")
     // .then(data=> jschardet.detect(data))
     // .then(console.log)
     .then((data) => encoder(data))

@@ -4,6 +4,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import "express-async-errors";
 import weatherRouter from "./router/weathers.js";
+import populationRouter from "./router/population.js";
 import { config } from "./config.js";
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(morgan("tiny"));
 
 // Router
 app.use("/weathers", weatherRouter);
+app.use("/pop", populationRouter);
 
 // 404, 500 처리
 app.use((req, res, next) => {
