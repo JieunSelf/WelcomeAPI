@@ -5,6 +5,7 @@ import helmet from "helmet";
 import "express-async-errors";
 import weatherRouter from "./router/weathers.js";
 import populationRouter from "./router/population.js";
+import temperatureRouter from "./router/temperature.js";
 import { config } from "./config.js";
 
 const app = express();
@@ -20,8 +21,13 @@ app.use(cors(corsOption)); // 배포할 때 수정 필요 (12.7.)
 app.use(morgan("tiny"));
 
 // Router
+app.get('/', function (req, res) {
+  res.send({message : 'This is welcome API', ver : '1.0'});
+});
 app.use("/weathers", weatherRouter);
 app.use("/pop", populationRouter);
+// 기온 데이터 추가
+app.use("/temperature", temperatureRouter);
 
 // 404, 500 처리
 app.use((req, res, next) => {
