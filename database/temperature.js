@@ -57,12 +57,12 @@ export async function getWeathers(local) {
     .then((data) => encoder(data))
     .then((data) => converter(data, local))
     .catch(console.error);
-  let result = {};
-  result["title"] = "월별 평균기온";
-  result["start"] = "2000년 1월";
-  result["end"] = "2022년 2월";
-  result["data"] = await data;
-  return result;
+  // let result = {};
+  // result["title"] = "월별 평균기온";
+  // result["start"] = "2000년 1월";
+  // result["end"] = "2022년 2월";
+  // result["data"] = await data;
+  return data;
 }
 
 // 연도별 기온??
