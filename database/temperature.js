@@ -8,7 +8,7 @@ function encoder(data) {
   return encoder.convert(data).toString("utf-8");
 }
 
-function converter(csvText, local) {
+function converter(csvText, local, start, end) {
   const [columns, ...rows] = csvText.trim(/\s/g).split(os.EOL);
   const keys = columns.split(",");
   const valuesArray = rows.map((row) => row.split(","));
@@ -31,13 +31,20 @@ function converter(csvText, local) {
       ? 8
       : local == "jeju"
       ? 9
-      : undefined;
+      : local == "all"
+      ? undefined
+      : 10;
   // local == '!@#WETGDV'인 경우, 에러처리하기
+  if (localKey === 10) {
+    return false;
+  }
 
   const new_keys = localKey ? [keys[0], keys[localKey]] : keys;
   const newValuesArray = localKey
-    ? valuesArray.map((values) => [values[0], values[localKey]])
-    : valuesArray;
+    ? valuesArray
+        .map((values) => [values[0], values[localKey]])
+        .slice(start, end)
+    : valuesArray.slice(start, end);
 
   const jsonText = newValuesArray.map((values) =>
     values.reduce((acc, v, i) => {
@@ -66,6 +73,11 @@ export async function getWeathers(local) {
 }
 
 // 연도별 기온??
-export async function getWeathersByYear(year) {}
-
-// 지역별 연도별 기온
+export async function getWeathersByMonth(local, startOrder, endOrder) {
+  const data = fs.promises
+    .readFile("./csv_data/local_temperature.csv")
+    .then((data) => encoder(data))
+    .then((data) => converter(data, local, startOrder, endOrder))
+    .catch(console.error);
+  return data;
+}
