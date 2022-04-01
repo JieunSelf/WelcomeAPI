@@ -5,31 +5,61 @@ import * as jschardet from "jschardet";
 
 function encoder(data) {
   const encoder = new iconv.Iconv("euc-kr", "utf-8//translit//ignore");
+
   return encoder.convert(data).toString("utf-8");
 }
 
-function converter(csvText) {
-  const [columns, ...rows] = csvText.trim(/\s/g).split(os.EOL);
+function makeAgeOrder(age) {
+  if (age < 80) {
+    return age + 2;
+  } else if (age > 79 && age < 85) {
+    return age + 3;
+  } else if (age > 84 && age < 100) {
+    return age + 4;
+  } else if (age > 99) {
+    return 105;
+  }
+}
+
+function converter(data, startAge, endAge, year) {
+  console.log('startAge :', startAge)
+  console.log('endAge : ', endAge)
+  const [columns, ...rows] = data.trim(/\s/g).split(os.EOL);
   const keys = columns.split(",");
   const valuesArray = rows.map((row) => row.split(","));
-  const jsonText = valuesArray.map((values) =>
+  const startOrder = makeAgeOrder(parseInt(startAge));
+  const endOrder = makeAgeOrder(parseInt(endAge));
+  console.log('startOrder', startOrder)
+  console.log('endOrder', endOrder)
+
+  const new_keys = keys.slice(startOrder, endOrder + 1);
+  console.log('new_keys', new_keys);
+
+  const newValuesArray = [valuesArray[year - 1993].slice(startOrder, endOrder+1)];
+  console.log('newValuesArray', newValuesArray)
+
+  const jsonText = newValuesArray.map((values) =>
     values.reduce((acc, v, i) => {
-      acc[keys[i]] = parseInt(v);
+      acc[new_keys[i]] = parseInt(v);
+      console.log(acc);
       return acc;
     }, {})
   );
+
+
   return jsonText;
+
 }
 
-// 지역별 기온
-export async function getAllPop() {
+//
+export async function getPopulation(startAge, endAge, year) {
   const data = fs.promises
-    .readFile("./csv_data/population.csv")
+    .readFile("./csv_data/population_total.csv")
     // .then((data) => jschardet.detect(data))
     // .then(data => console.log(data))
     // .then((data) => data.toString())
     .then((data) => encoder(data))
-    .then((data) => converter(data))
+    .then((data) => converter(data, startAge, endAge, year))
     .catch(console.error);
   return data;
 }

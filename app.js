@@ -7,6 +7,7 @@ import weatherRouter from "./router/weathers.js";
 import populationRouter from "./router/population.js";
 import temperatureRouter from "./router/temperature.js";
 import { config } from "./config.js";
+import rateLimiter from "./middleware/rate-limiter.js";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors(corsOption)); // 배포할 때 수정 필요 (12.7.)
 app.use(morgan("tiny"));
+app.use(rateLimiter); // rateLimiter 추가
 
 // Router
 app.get("/", function (req, res) {
@@ -27,7 +29,7 @@ app.get("/", function (req, res) {
 app.get("/docs", function (req, res) {
   res.sendFile(__dirname + "/docs.html");
 });
-app.use("/pop", populationRouter);
+app.use("/population", populationRouter);
 app.use("/temperature", temperatureRouter);
 app.use("/weathers", weatherRouter);
 

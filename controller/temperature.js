@@ -25,9 +25,9 @@ export async function getAllWeathers(req, res) {
     startOrder,
     endOrder
   );
-  // ❗ 에러처리 필요함.
+  // ❗ 에러처리 필요함. 🚩 (재확인 필요)
   if (!data) {
-    res.status(404).json({ message: "지역 코드를 확인하세요." });
+    res.status(404).json({ message: "연도와 월을 확인하세요." });
   }
   return res.status(200).json(data);
 }

@@ -12,4 +12,10 @@ function required(key, defaultValue = undefined) {
 export const config = {
   port: parseInt(required("PORT", 8080)),
   cors: { allowedOrigin: required("CORS_ALLOW_ORIGIN") },
+
+  // rateLimit 관련
+  rateLimit: {
+    windowMs: 60000,
+    maxRequest: 300,
+  },
 };
