@@ -18,4 +18,10 @@ export const config = {
     windowMs: 60000,
     maxRequest: 300,
   },
+
+  // 인증키 관련
+  adminKey: required("ADMIN_KEY"),
+  jwt: {
+    secretKey: required("JWT_SECRET"),
+  },
 };

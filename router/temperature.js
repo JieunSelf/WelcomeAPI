@@ -2,6 +2,7 @@ import express from "express";
 import "express-async-errors";
 import { query } from "express-validator";
 import { validate } from "../middleware/validator.js";
+import { isAuth } from "../middleware/auth.js";
 import * as temperatureController from "../controller/temperature.js";
 
 const router = express.Router();
@@ -12,6 +13,10 @@ const TIME_ERROR =
 
 // Query String 유효성 검사
 const validateQuery = [
+  query("key") //
+    .trim()
+    .isLength(1)
+    .withMessage("인증키를 입력하여 주세요."),
   query("start")
     .optional()
     .trim()
@@ -29,8 +34,14 @@ const validateQuery = [
   validate,
 ];
 
-// GET /temperature
-// GET /temperature?start=:start&end=:end
-router.get("/", validateQuery, temperatureController.getAllWeathers);
+// GET /temperature?key=:key
+// GET /temperature?key=:key&start=:start&end=:end
+router.get("/", validateQuery, isAuth, temperatureController.getAllWeathers);
 
-router.get("/:local", validateQuery, temperatureController.getLocalWeathers);
+// GET /temperature/:local?key=:key&start=:start&end=:end
+router.get(
+  "/:local",
+  validateQuery,
+  isAuth,
+  temperatureController.getLocalWeathers
+);

@@ -3,9 +3,9 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import "express-async-errors";
-import weatherRouter from "./router/weathers.js";
 import populationRouter from "./router/population.js";
 import temperatureRouter from "./router/temperature.js";
+import authRouter from "./router/auth.js";
 import { config } from "./config.js";
 import rateLimiter from "./middleware/rate-limiter.js";
 
@@ -31,7 +31,7 @@ app.get("/docs", function (req, res) {
 });
 app.use("/population", populationRouter);
 app.use("/temperature", temperatureRouter);
-app.use("/weathers", weatherRouter);
+app.use("/key", authRouter);
 
 // 404, 500 처리
 app.use((req, res, next) => {

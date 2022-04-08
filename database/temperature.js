@@ -2,16 +2,9 @@ import * as fs from "fs";
 import * as os from "os";
 import * as iconv from "iconv";
 // import * as jschardet from "jschardet";
+import encoder from "../middleware/encoder.js";
 
-function encoder(data) {
-  const encoder = new iconv.Iconv("euc-kr", "utf-8//translit//ignore");
-  return encoder.convert(data).toString("utf-8");
-}
-
-function converter(csvText, local, start, end) {
-  const [columns, ...rows] = csvText.trim(/\s/g).split(os.EOL);
-  const keys = columns.split(",");
-  const valuesArray = rows.map((row) => row.split(","));
+function getLocalKey(local) {
   const localKey =
     local == "seoul"
       ? 1
@@ -34,11 +27,17 @@ function converter(csvText, local, start, end) {
       : local == "all"
       ? undefined
       : 10;
-  // local == '!@#WETGDV'인 경우, 에러처리하기
   if (localKey === 10) {
     return false;
   }
+  return localKey;
+}
 
+function converter(csvText, local, start, end) {
+  const [columns, ...rows] = csvText.trim(/\s/g).split(os.EOL);
+  const keys = columns.split(",");
+  const valuesArray = rows.map((row) => row.split(","));
+  const localKey = getLocalKey(local);
   const new_keys = localKey ? [keys[0], keys[localKey]] : keys;
   const newValuesArray = localKey
     ? valuesArray
@@ -55,24 +54,6 @@ function converter(csvText, local, start, end) {
   return jsonText;
 }
 
-// 지역별 기온
-export async function getWeathers(local) {
-  const data = fs.promises
-    .readFile("./csv_data/local_temperature.csv")
-    // .then(data=> jschardet.detect(data))
-    // .then(console.log)
-    .then((data) => encoder(data))
-    .then((data) => converter(data, local))
-    .catch(console.error);
-  // let result = {};
-  // result["title"] = "월별 평균기온";
-  // result["start"] = "2000년 1월";
-  // result["end"] = "2022년 2월";
-  // result["data"] = await data;
-  return data;
-}
-
-// 연도별 기온??
 export async function getWeathersByMonth(local, startOrder, endOrder) {
   const data = fs.promises
     .readFile("./csv_data/local_temperature.csv")

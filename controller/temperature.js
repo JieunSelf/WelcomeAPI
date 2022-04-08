@@ -14,6 +14,7 @@ function makeEndOrder(end) {
   return endOrder;
 }
 
+// 모든 지역 날씨
 export async function getAllWeathers(req, res) {
   const start = req.query.start;
   const end = req.query.end;
@@ -25,13 +26,14 @@ export async function getAllWeathers(req, res) {
     startOrder,
     endOrder
   );
-  // ❗ 에러처리 필요함. 🚩 (재확인 필요)
-  if (!data) {
-    res.status(404).json({ message: "연도와 월을 확인하세요." });
+  // ❗ 에러처리
+  if (Array.isArray(data) && data.length === 0) {
+    return res.status(404).json({ message: "연도와 월을 확인하세요." });
   }
   return res.status(200).json(data);
 }
 
+// 지역별 날씨
 export async function getLocalWeathers(req, res) {
   const local = req.params.local;
   const start = req.query.start;
@@ -44,9 +46,12 @@ export async function getLocalWeathers(req, res) {
     startOrder,
     endOrder
   );
-  // ❗ 에러처리 필요함.
+  // ❗ 에러처리
   if (!data) {
     return res.status(404).json({ message: "지역 코드를 확인하세요." });
+  }
+  if (Array.isArray(data) && data.length === 0) {
+    return res.status(404).json({ message: "연도와 월을 확인하세요." });
   }
   res.status(200).json(data);
 }
