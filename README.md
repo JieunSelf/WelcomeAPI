@@ -16,4 +16,4 @@
 
 ## 3. API Documentation
 
-- API Documentation : [link](https://ninth-skate-f91.notion.site/Welcome-API-Documentation-7c967b437a534fe9891b8f8bec5de562#2f0bb37bba434f42927f9022e60c1a3f) 
+- API Documentation : [link](https://ninth-skate-f91.notion.site/Welcome-API-Documentation-7c967b437a534fe9891b8f8bec5de562) 
